@@ -7,12 +7,12 @@ class QLabel;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
+   public:
+    explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
-private:
-    QLabel *statusLabel_;
+   private:
+    QLabel* statusLabel_;
     void setupUi();
     void setupConnections();
 };

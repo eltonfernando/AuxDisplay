@@ -3,8 +3,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), statusLabel_(nullptr) {
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), statusLabel_(nullptr) {
     setupUi();
     setupConnections();
 }
@@ -12,15 +11,15 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() = default;
 
 void MainWindow::setupUi() {
-    auto *central = new QWidget(this);
-    auto *layout = new QVBoxLayout(central);
+    auto* central = new QWidget(this);
+    auto* layout  = new QVBoxLayout(central);
 
     statusLabel_ = new QLabel(tr("AuxDesk — auxiliary display app"), central);
     layout->addWidget(statusLabel_);
 
     setCentralWidget(central);
     setWindowTitle(tr("AuxDesk"));
-    resize(480, 272); // exemplo para mini display
+    resize(480, 272);  // exemplo para mini display
 }
 
 void MainWindow::setupConnections() {

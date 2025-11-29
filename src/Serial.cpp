@@ -1,10 +1,10 @@
 #include "Serial.hpp"
-#include <iostream>
 #include <fcntl.h>
-#include <unistd.h>
-#include <termios.h>
-#include <vector>
 #include <poll.h>
+#include <termios.h>
+#include <unistd.h>
+#include <iostream>
+#include <vector>
 std::optional<SerialDetector::DeviceInfo> SerialDetector::findDisplay() const {
     udev* udev_ctx = udev_new();
     if (!udev_ctx) {
@@ -20,14 +20,12 @@ std::optional<SerialDetector::DeviceInfo> SerialDetector::findDisplay() const {
 
     udev_list_entry_foreach(entry, devices) {
         const char* syspath = udev_list_entry_get_name(entry);
-        udev_device* dev = udev_device_new_from_syspath(udev_ctx, syspath);
+        udev_device* dev    = udev_device_new_from_syspath(udev_ctx, syspath);
 
         const char* devnode = udev_device_get_devnode(dev);
         if (!devnode) continue;
 
-        udev_device* parent = udev_device_get_parent_with_subsystem_devtype(
-            dev, "usb", "usb_device"
-        );
+        udev_device* parent = udev_device_get_parent_with_subsystem_devtype(dev, "usb", "usb_device");
 
         if (!parent) {
             udev_device_unref(dev);
@@ -37,26 +35,18 @@ std::optional<SerialDetector::DeviceInfo> SerialDetector::findDisplay() const {
         const char* vid = udev_device_get_sysattr_value(parent, "idVendor");
         const char* pid = udev_device_get_sysattr_value(parent, "idProduct");
 
-        if (vid && pid &&
-            std::string(vid) == TARGET_VID &&
-            std::string(pid) == TARGET_PID) 
-        {
+        if (vid && pid && std::string(vid) == TARGET_VID && std::string(pid) == TARGET_PID) {
             const char* serial = udev_device_get_sysattr_value(parent, "serial");
 
-            DeviceInfo info{
-                .devnode = devnode,
-                .vid = vid,
-                .pid = pid,
-                .serial = serial ? serial : ""
-            };
+            DeviceInfo info{.devnode = devnode, .vid = vid, .pid = pid, .serial = serial ? serial : ""};
 
             udev_device_unref(dev);
             udev_enumerate_unref(enumerate);
             udev_unref(udev_ctx);
             std::cout << "Display encontrado em: " << info.devnode << "\n"
-                  << "VID: " << info.vid << "\n"
-                  << "PID: " << info.pid << "\n"
-                  << "Serial: " << info.serial << "\n";
+                      << "VID: " << info.vid << "\n"
+                      << "PID: " << info.pid << "\n"
+                      << "Serial: " << info.serial << "\n";
 
             return info;
         }
@@ -93,7 +83,7 @@ std::optional<SerialDetector::DeviceInfo> SerialDetector::connect() const {
     tty.c_oflag = 0;
     tty.c_iflag &= ~(IXON | IXOFF | IXANY);
 
-    tty.c_cc[VMIN] = 1;
+    tty.c_cc[VMIN]  = 1;
     tty.c_cc[VTIME] = 0;
 
     tcsetattr(fd, TCSANOW, &tty);
@@ -116,12 +106,12 @@ std::vector<uint8_t> SerialDetector::readResponse(int fd, int timeout_ms) const 
     uint8_t temp[256];
 
     pollfd p{};
-    p.fd = fd;
+    p.fd     = fd;
     p.events = POLLIN;
 
     int ret = poll(&p, 1, timeout_ms);
     if (ret <= 0) {
-        return buffer; // vazio = sem resposta
+        return buffer;  // vazio = sem resposta
     }
 
     ssize_t n = ::read(fd, temp, sizeof(temp));

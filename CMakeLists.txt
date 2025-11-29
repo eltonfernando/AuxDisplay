@@ -15,13 +15,7 @@ add_subdirectory(src)
 add_executable(${PROJECT_NAME} main.cpp)
 # executável precisa dos includes
 target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
+                           PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # executável também precisa linkar Qt
-target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        AuxDeskLib
-        Qt6::Widgets
-)
+target_link_libraries(${PROJECT_NAME} PRIVATE AuxDeskLib Qt6::Widgets)
