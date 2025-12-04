@@ -4,13 +4,17 @@ project(AuxDesk LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+option(ENABLE_TESTS "Habilitar a compilação de testes" ON)
 # Detecta Qt6 instalado via apt (Ubuntu/Debian)
 set(QT_PREFIX "/usr/lib/x86_64-linux-gnu/cmake")
-
+include(cmake/gtest.cmake)
 set(Qt6_DIR "${QT_PREFIX}/Qt6")
 list(APPEND CMAKE_PREFIX_PATH "${QT_PREFIX}")
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_subdirectory(src)
+
+enable_testing()
+add_subdirectory(./tests/config)
 
 add_executable(${PROJECT_NAME} main.cpp)
 # executável precisa dos includes
